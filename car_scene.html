@@ -56,6 +56,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       let xrRefSpace = null;
       let xrViewerSpace = null;
       let xrHitTestSource = null;
+	  
+	  let mainCarCrash = null;
 
       // WebGL scene globals.
       let gl = null;
@@ -161,6 +163,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       const MAX_ANCHORED_OBJECTS = 3;
       let anchoredObjects = [];
       function addAnchoredObjectsToScene(anchor) {
+	  
+	    if (!mainCarCrash)
+	    {
+			const anchorPose = frame.getPose(anchor.anchorSpace, xrRefSpace);
+			if (anchorPose) 
+			{
+			  mainCarCrash = new Gltf2Node({url: 'media/gltf/1.glb'});
+              mainCarCrash.matrix = anchorPose.transform.matrix;
+			
+			  scene.addNode(mainCarCrash);
+			  return;
+			}
+	    }
+		
         let traffic_cone = new Gltf2Node({url: 'media/gltf/TrafficCone.glb'});
         scene.addNode(traffic_cone);
         anchoredObjects.push({
@@ -177,6 +193,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       let rayOrigin = vec3.create();
       let rayDirection = vec3.create();
+	  
       function onSelect(event) {
         if (reticle.visible) {
           // Create an anchor.
