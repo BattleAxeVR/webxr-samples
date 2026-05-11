@@ -57,8 +57,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       let xrViewerSpace = null;
       let xrHitTestSource = null;
 	  
-	  let mainCarCrash = null;
-
       // WebGL scene globals.
       let gl = null;
       let renderer = null;
@@ -71,6 +69,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       let traffic_cone = new Gltf2Node({url: 'media/gltf/TrafficCone.glb'});
       arObject.addNode(traffic_cone);
+	  
+	  let mainCarCrash = new Gltf2Node({url: 'media/gltf/1.glb'});
+	  scene.addNode(mainCarCrash);
 
       let reticle = new Gltf2Node({url: 'media/gltf/reticle/reticle.gltf'});
       reticle.visible = false;
@@ -164,26 +165,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       let anchoredObjects = [];
       function addAnchoredObjectsToScene(anchor) {
 	  
-	    if (!mainCarCrash)
-	    {
-			const anchorPose = frame.getPose(anchor.anchorSpace, xrRefSpace);
-			if (anchorPose) 
-			{
-			  mainCarCrash = new Gltf2Node({url: 'media/gltf/1.glb'});
-              mainCarCrash.matrix = anchorPose.transform.matrix;
-			
-			  scene.addNode(mainCarCrash);
-			  return;
-			}
-	    }
-		
-        let traffic_cone = new Gltf2Node({url: 'media/gltf/TrafficCone.glb'});
+
+		let traffic_cone = new Gltf2Node({url: 'media/gltf/TrafficCone.glb'});
         scene.addNode(traffic_cone);
+		
         anchoredObjects.push({
           anchoredObject: traffic_cone,
           anchor: anchor
         });
-
+        
         if (anchoredObjects.length > MAX_ANCHORED_OBJECTS) {
           let objectToRemove = anchoredObjects.shift();
           scene.removeNode(objectToRemove.anchoredObject);
